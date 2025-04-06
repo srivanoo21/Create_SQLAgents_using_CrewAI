@@ -1,0 +1,14 @@
+langchain
+langchain-core
+langchain-community
+crewai[tools]==0.32.0
+# crewai==0.32.0
+# crewai-tools==0.3.0
+langchain-groq
+langchain-openai
+langchain-experimental
+
+pandas
+scipy
+matplotlib
+python-dotenv
