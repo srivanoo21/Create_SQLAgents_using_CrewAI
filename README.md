@@ -52,14 +52,12 @@ By combining large language models (LLMs) with modular, role-based AI agents, th
 
 # 🔧 Tools Overview
 
-| Tool Name     | Purpose                                                             |
-|---------------|---------------------------------------------------------------------|
-| `get_schema`  | Extracts and displays the schema of the connected SQL database      |
-| `generate_sql`| Converts user questions into valid SQL queries using LLM            |
-| `validate_sql`| Checks the syntactic and semantic correctness of SQL queries        |
-| `execute_sql` | Executes SQL against the SQLite database and returns results        |
-| `analyze_data`| Transforms raw SQL result into readable insights                    |
-| `editor_tool` | Refines insights into a structured summary                          |
+| Tool Name              | Purpose                                | When to Use                                |
+|------------------------|----------------------------------------|--------------------------------------------|
+| `ListSQLDatabaseTool`  | Discover table names                   | Start of a session or before querying      |
+| `InfoSQLDatabaseTool`  | Understand schema + sample data        | Before writing precise SQL                 |
+| `QuerySQLCheckerTool`  | Validate generated SQL queries         | Safety check before execution              |
+| `QuerySQLDataBaseTool` | Execute SQL queries                    | After validation, for data retrieval       |
 
 ---
 

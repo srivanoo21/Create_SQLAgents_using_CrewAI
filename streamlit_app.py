@@ -106,7 +106,7 @@ if st.session_state.model_loaded and st.session_state.data_loaded:
         """List the available tables in the database"""
         return ListSQLDatabaseTool(db=db).invoke("")
 
-    list_tables.run()
+    #list_tables.run()
 
 
     # Tool 2 : Return the schema and sample rows for a given list of tables
@@ -120,28 +120,28 @@ if st.session_state.model_loaded and st.session_state.data_loaded:
         tool = InfoSQLDatabaseTool(db=db)
         return tool.invoke(tables)
 
-    print(tables_schema.run("salaries"))
+    #print(tables_schema.run("salaries"))
 
 
-    # Tool 3: Executes a given SQL query
-    @tool("execute_sql")
-    def execute_sql(sql_query: str) -> str:
-        """Execute a SQL query against the database. Returns the result"""
-        return QuerySQLDataBaseTool(db=db).invoke(sql_query)
-
-    execute_sql.run("SELECT * FROM salaries WHERE salary > 10000 LIMIT 5")
-
-
-    # Tool 4 : checks the SQL query before executing it
+    # Tool 3 : checks the SQL query before executing it
     @tool("check_sql")
     def check_sql(sql_query: str) -> str:
         """
         Use this tool to double check if your query is correct before executing it. Always use this
         tool before executing a query with `execute_sql`.
         """
-        return QuerySQLCheckerTool(db=db, llm=st.session_state.llm).invoke({"query": sql_query})
+        return QuerySQLCheckerTool(db=db, llm=llm).invoke({"query": sql_query})
 
-    check_sql.run("SELECT * WHERE salary > 10000 LIMIT 5 table = salaries")
+    #check_sql.run("SELECT * WHERE salary > 10000 LIMIT 5 table = salaries")
+
+
+    # Tool 4: Executes a given SQL query
+    @tool("execute_sql")
+    def execute_sql(sql_query: str) -> str:
+        """Execute a SQL query against the database. Returns the result"""
+        return QuerySQLDataBaseTool(db=db).invoke(sql_query)
+
+    #execute_sql.run("SELECT * FROM salaries WHERE salary > 10000 LIMIT 5")
 
 
 
@@ -162,7 +162,7 @@ if st.session_state.model_loaded and st.session_state.data_loaded:
         """
         ),
         llm=st.session_state.llm,
-        tools=[list_tables, tables_schema, execute_sql, check_sql],
+        tools=[list_tables, tables_schema, check_sql, execute_sql],
         allow_delegation=False,
     )
 
