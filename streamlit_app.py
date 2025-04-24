@@ -130,7 +130,7 @@ if st.session_state.model_loaded and st.session_state.data_loaded:
         Use this tool to double check if your query is correct before executing it. Always use this
         tool before executing a query with `execute_sql`.
         """
-        return QuerySQLCheckerTool(db=db, llm=llm).invoke({"query": sql_query})
+        return QuerySQLCheckerTool(db=db, llm=st.session_state.llm).invoke({"query": sql_query})
 
     #check_sql.run("SELECT * WHERE salary > 10000 LIMIT 5 table = salaries")
 
@@ -143,8 +143,7 @@ if st.session_state.model_loaded and st.session_state.data_loaded:
 
     #execute_sql.run("SELECT * FROM salaries WHERE salary > 10000 LIMIT 5")
 
-
-
+    
     ## Create Agents =>
 
     # Agent 1 : Database Developer Agent will construct and execute SQL queries
@@ -157,8 +156,8 @@ if st.session_state.model_loaded and st.session_state.data_loaded:
             You have a deep understanding of how different databases work and how to optimize queries.
             Use the `list_tables` to find available tables.
             Use the `tables_schema` to understand the metadata for the tables.
-            Use the `execute_sql` to check your queries for correctness.
             Use the `check_sql` to execute queries against the database.
+            Use the `execute_sql` to check your queries for correctness.
         """
         ),
         llm=st.session_state.llm,

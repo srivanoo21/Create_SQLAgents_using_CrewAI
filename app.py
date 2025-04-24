@@ -170,8 +170,8 @@ sql_dev = Agent(
         You have a deep understanding of how different databases work and how to optimize queries.
         Use the `list_tables` to find available tables.
         Use the `tables_schema` to understand the metadata for the tables.
-        Use the `execute_sql` to check your queries for correctness.
         Use the `check_sql` to execute queries against the database.
+        Use the `execute_sql` to check your queries for correctness.
     """
     ),
     llm=llm,

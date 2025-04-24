@@ -1,0 +1,14 @@
+agent=Senior Database Developer2025-04-24 15:53:00: task=Generate the SQL query for the question: What is the name of the job title of lowest and highest salary in USD?.2025-04-24 15:53:00: status=started
+agent=Senior Database Developer2025-04-24 15:53:18: task=SELECT 'Lowest Salary' AS type, job_title, salary_in_usd
+FROM salaries
+WHERE salary_currency = 'USD'
+ORDER BY salary_in_usd ASC
+LIMIT 1
+
+UNION ALL
+
+SELECT 'Highest Salary' AS type, job_title, salary_in_usd
+FROM salaries
+WHERE salary_currency = 'USD'
+ORDER BY salary_in_usd DESC
+LIMIT 1;2025-04-24 15:53:18: status=completed
