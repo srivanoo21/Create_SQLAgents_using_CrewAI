@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 from dataclasses import dataclass, asdict
 from typing import Any, Dict, List
 
+from langchain_community.llms import HuggingFacePipeline, HuggingFaceEndpoint
+
 from dotenv import load_dotenv
 from crewai import Agent, Task, Crew, Process
 from crewai_tools import tool
@@ -24,6 +26,7 @@ from langchain_groq import ChatGroq
 # Load API Key
 load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
+hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
 
 # Session State Setup
 if "model_loaded" not in st.session_state:
@@ -65,10 +68,12 @@ st.title("📊 CSV to SQL Agent App")
 if not st.session_state.model_loaded:
     if st.button("⚙️ Load LLM Model"):
         with st.spinner("Loading model..."):
-            st.session_state.llm = ChatGroq(
-                temperature=0,
-                model_name="llama3-8b-8192",
-                callbacks=[LLMCallbackHandler(Path("prompts.jsonl"))]
+            # Load the hosted model via endpoint
+            st.session_state.llm = HuggingFaceEndpoint(
+                repo_id="microsoft/Phi-4-mini-instruct",
+                temperature=0.7,
+                max_new_tokens=100,
+                huggingfacehub_api_token=hf_token
             )
             st.session_state.model_loaded = True
         st.success("✅ Model loaded successfully!")
@@ -89,7 +94,6 @@ if st.session_state.model_loaded:
         conn.commit()
 
         df.to_sql(name="user_table", con=conn, if_exists="replace", index=False)
-        conn.close()
 
         # Save DB object to session
         st.session_state.db = SQLDatabase.from_uri("sqlite:///data.db")
@@ -135,9 +139,6 @@ if st.session_state.model_loaded and st.session_state.data_loaded:
         Use this tool to double check if your query is correct before executing it.
         """
         return QuerySQLCheckerTool(db=db, llm=st.session_state.llm).invoke({"query": sql_query})
-
-    #check_sql.run("SELECT * WHERE salary > 10000 LIMIT 5 table = salaries")
-
     
     ## Create Agents =>
 
@@ -151,7 +152,7 @@ if st.session_state.model_loaded and st.session_state.data_loaded:
             You have a deep understanding of how different databases work and how to optimize queries.
             Use the `list_tables` to find available tables.
             Use the `tables_schema` to understand the metadata for the tables.
-            Use the `check_sql` to execute queries against the database.
+            Use the `check_sql` to verify queries against the database.
         """
         ),
         llm=st.session_state.llm,
